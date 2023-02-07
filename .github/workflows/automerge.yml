@@ -1,24 +1,24 @@
-name: Force Push to Staging
+name: Deploy to staging
 
 on:
   push:
     branches:
       - main
 
+env:
+  GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        ref: main
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Add Staging Remote
-      run: |
-        git remote add staging https://github.com/qburst-arundev/test.git
-
-    - name: Force Push to Staging
-      run: |
-        git push staging main --force
+      - name: Force push to staging
+        run: |
+          git checkout main
+          git push -f origin main:staging
+        env:
+          GITHUB_TOKEN: ${{ env.PERSONAL_ACCESS_TOKEN }}
