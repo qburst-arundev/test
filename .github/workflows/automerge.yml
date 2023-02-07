@@ -1,24 +1,21 @@
-name: Deploy to staging
-
+name: Update staging
 on:
   push:
     branches:
       - main
-
-env:
-  GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-
 jobs:
-  deploy:
+  push-to-staging-branch:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Force push to staging
-        run: |
-          git checkout main
-          git push -f origin main:staging
+      - uses: actions/checkout@v3
+      - shell: bash
+        name: Push changes to staging branch
         env:
-          GITHUB_TOKEN: ${{ env.PERSONAL_ACCESS_TOKEN }}
+          PAT: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+        run: |
+          repoWithToken="https://"$PAT"git@github.com:qburst-arundev/test.git"
+          git init
+          git remote set-url origin $repoWithToken
+          git branch -M staging
+          git add --all
+          git push --force -u origin staging
