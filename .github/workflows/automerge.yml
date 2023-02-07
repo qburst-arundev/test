@@ -1,21 +1,15 @@
-name: Update staging
+name: dev-environ-workflow
 on:
   push:
     branches:
       - main
 jobs:
-  push-to-staging-branch:
+  push-to-test-branch:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
       - shell: bash
-        name: Push changes to staging branch
-        env:
-          PAT: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        run: |
-          repoWithToken="https://"$PAT"git@github.com:qburst-arundev/test.git"
-          git init
-          git remote set-url origin $repoWithToken
-          git branch -M staging
-          git add --all
-          git push --force -u origin staging
+        name: Push changes to test branch
+        run: git push -f origin HEAD:staging
